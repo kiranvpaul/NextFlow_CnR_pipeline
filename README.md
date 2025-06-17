@@ -4,32 +4,6 @@ Cut&Run Nextflow Pipeline
 
 This repository hosts a Nextflow DSL2 pipeline for processing Cut&Run sequencing data from raw FASTQ reads through trimmed, aligned, and fragment-length analysis stages. The workflow is designed for HPC or cloud environments and leverages your cluster’s module system.
 
-Table of Contents
-
-Features
-
-Requirements
-
-Installation
-
-Configure
-
-Usage
-
-Input & Output
-
-Pipeline Outline
-
-Process Descriptions
-
-Profiles
-
-Example
-
-Troubleshooting
-
-License
-
 Features
 
 Adapter trimming via Cutadapt

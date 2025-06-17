@@ -4,7 +4,7 @@ Cut&Run Nextflow Pipeline
 
 This repository hosts a Nextflow DSL2 pipeline for processing Cut&Run sequencing data from raw FASTQ reads through trimmed, aligned, and fragment-length analysis stages. The workflow is designed for HPC or cloud environments and leverages your cluster’s module system.
 
-Features
+# Features
 
 Adapter trimming via Cutadapt
 
@@ -20,7 +20,7 @@ Compression & de-duplication steps
 
 Module-based for HPC environments (SLURM, LSF)
 
-Requirements
+# Requirements
 
 Nextflow (>=24.x)
 
@@ -30,7 +30,7 @@ HPC modules: cutadapt, bowtie2, samtools, bedtools, perl
 
 Slurm or LSF scheduler (profiles provided)
 
-Installation
+# Installation
 
 Clone this repo:
 
@@ -42,7 +42,7 @@ Ensure Nextflow is installed and in your $PATH:
 curl -s https://get.nextflow.io | bash
 mv nextflow ~/bin/
 
-Configure
+# Configure
 
 Edit nextflow.config to set:
 
@@ -58,7 +58,7 @@ params.SCRIPTS: path to helper scripts
 
 Resource directives (memory, time, queue) under your chosen profile
 
-Usage
+# Usage
 
 Run the pipeline with your chosen scheduler profile. For example, on a Slurm cluster:
 
@@ -78,7 +78,7 @@ Fragment-length distributions (*_braw.len, *_bnorm.len)
 
 Compressed BED files and deduplicated outputs
 
-Pipeline Outline
+# Pipeline Outline
 
 samples_ch -> fastqs_ch
 fastqs_ch → cutadapt → trimmed_ch
@@ -88,41 +88,19 @@ pebeds_ch → lengthFiles → lengths_ch
 pebeds_ch → zipBeds → gzbed_ch
 gzbed_ch → uniqBeds → unique_ch
 
-Process Descriptions
+# Process Descriptions
 
-Process
+| Process        | Description                                                                                  |
+| -------------- | -------------------------------------------------------------------------------------------- |
+| **cutadapt**     | Trims adapters and filters reads by length                                                 |
+| **bowtie2**      | Aligns trimmed reads to the genome, outputs SAM                                            |
+| **postAlign**    | Sorts SAM to BAM, filters properly-paired reads, converts to BEDPE and then BED            |
+| **pebeds**       | Converts BEDPE to single-end BED fragments via Perl helper (`bedpe2bed.pl`)                |
+| **lengthFiles**  | Computes raw counts and normalized fragment-length distributions                           |
+| **zipBeds**      | Compresses fragment BED files with `gzip`                                                  |
+| **uniqBeds**     | Removes duplicate fragments via `uniq_STDOUT.pl` and outputs gzipped BED                   |
 
-Description
-
-cutadapt
-
-Trims adapters and filters reads by length
-
-bowtie2
-
-Aligns trimmed reads to the genome, outputs SAM
-
-postAlign
-
-Sorts SAM to BAM, filters properly-paired reads, converts to BEDPE and then BED
-
-pebeds
-
-Converts BEDPE to single-end BED fragments via Perl helper (bedpe2bed.pl)
-
-lengthFiles
-
-Computes raw counts and normalized fragment-length distributions
-
-zipBeds
-
-Compresses fragment BED files with gzip
-
-uniqBeds
-
-Removes duplicate fragments via uniq_STDOUT.pl and outputs gzipped BED
-
-Profiles
+# Profiles
 
 local: run everything locally
 
@@ -132,7 +110,7 @@ lsf: submit via LSF (--executor lsf)
 
 Example
 
-Prepare your config:
+# Prepare your config:
 
 params {
   DATA    = 'data/'          
@@ -145,11 +123,11 @@ profiles {
   slurm { process.queue='compute'; process.time='48h' }
 }
 
-Launch:
+# Launch:
 
 nextflow run main.nf -c nextflow.config -profile slurm
 
-Troubleshooting
+# Troubleshooting
 
 invalid partition: verify process.queue matches your cluster’s partitions (see sinfo).
 
@@ -157,7 +135,7 @@ QOS errors: set process.memory and clusterOptions (--qos) to satisfy your polici
 
 Syntax errors: ensure DSL2 is enabled (nextflow.enable.dsl = 2) and braces match.
 
-License
+# License
 
 This pipeline is released under the MIT License.
 
